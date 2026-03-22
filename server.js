@@ -5,6 +5,13 @@ dotenv.config();
 
 const app = express();
 app.use(express.json({ limit: "256kb" }));
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-client-token, x-client-id");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
 
 const PORT = Number(process.env.PORT || 3001);
 // If you want to hardcode locally, paste the key below and leave env empty.
@@ -23,6 +30,7 @@ if (!GROQ_API_KEY) {
 }
 
 app.get("/health", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.json({ ok: true, model: MODEL });
 });
 
